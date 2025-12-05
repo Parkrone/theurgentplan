@@ -47,7 +47,6 @@
 
     <script type="text/babel">
         // --- GLOBAL VARIABLE SETUP (Replaces Imports) ---
-        // This prevents the "module resolution" errors
         const { useState, useEffect } = React;
         const { createRoot } = ReactDOM;
         const { 
@@ -55,7 +54,7 @@
             ResponsiveContainer, PieChart, Pie, Cell 
         } = Recharts;
 
-        // --- ICON COMPONENTS (Lucide Replacements) ---
+        // --- ICON COMPONENTS ---
         const IconWrapper = ({ children, color, className }) => (
             <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -79,17 +78,14 @@
         const Home = (props) => <IconWrapper {...props}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></IconWrapper>;
         const Smartphone = (props) => <IconWrapper {...props}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></IconWrapper>;
         const GraduationCap = (props) => <IconWrapper {...props}><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></IconWrapper>;
-        const Sparkles = (props) => <IconWrapper {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 21l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></IconWrapper>;
+        const Sparkles = (props) => <IconWrapper {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></IconWrapper>;
         const MessageSquare = (props) => <IconWrapper {...props}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></IconWrapper>;
         const Loader2 = (props) => <IconWrapper {...props} className={`${props.className || ''} animate-spin`}><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></IconWrapper>;
         const X = (props) => <IconWrapper {...props}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></IconWrapper>;
 
-
         const FinancialDashboard = () => {
             // --- State Management ---
             const [activeTab, setActiveTab] = useState('dashboard');
-            
-            // Gemini API State
             const [aiLoading, setAiLoading] = useState(false);
             const [aiAnalysis, setAiAnalysis] = useState(null);
             const [scriptLoadingId, setScriptLoadingId] = useState(null);
@@ -131,8 +127,6 @@
             const totalDebt = debts.reduce((acc, curr) => acc + curr.amount, 0);
             const totalOverdue = debts.reduce((acc, curr) => acc + curr.overdue, 0);
             const selectedCollateral = assets.filter(a => a.selected).reduce((acc, curr) => acc + curr.value, 0);
-            
-            // Immediate Cash Need
             const immediateNeed = 449 + 338.96; 
             const coverageRatio = (selectedCollateral / immediateNeed).toFixed(1);
 
@@ -148,12 +142,11 @@
             const COLORS = ['#FF8042', '#FFBB28', '#00C49F', '#0088FE', '#8884d8'];
 
             // --- Gemini API Helpers ---
-            // IMPORTANT: Insert your Gemini API Key here
-            const apiKey = "AIzaSyDG1VmAS9f4hbdkbO5_VU5h4hvWyVtbsGs"; 
+            const apiKey = ""; 
 
             const callGemini = async (prompt) => {
                 if (!apiKey) {
-                    alert("Please open the index.html file and add your API key near line 140 to use AI features.");
+                    alert("Please open the index.html file and add your API key near line 133 to use AI features.");
                     return "Error: API Key missing.";
                 }
                 try {
@@ -335,6 +328,10 @@
                                 </div>
                                 ))}
                             </div>
+                            <div className="mt-6 pt-4 border-t flex justify-between items-center">
+                                <span className="text-gray-500">Total Security Value:</span>
+                                <span className="text-2xl font-bold text-green-600">${selectedCollateral}</span>
+                            </div>
                         </div>
 
                         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
@@ -350,11 +347,19 @@
 
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">
-                                <thead><tr className="bg-gray-50 text-left"><th className="p-3">Creditor</th><th className="p-3">Due Now</th><th className="p-3">Action</th></tr></thead>
+                                <thead>
+                                    <tr className="bg-gray-50 text-left">
+                                        <th className="p-3">Creditor</th>
+                                        <th className="p-3">Total</th>
+                                        <th className="p-3">Due Now</th>
+                                        <th className="p-3">Action</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     {debts.sort((a,b) => b.overdue - a.overdue).map((debt) => (
                                     <tr key={debt.id} className="border-b last:border-0 hover:bg-gray-50">
                                         <td className="p-3 font-medium">{debt.name}</td>
+                                        <td className="p-3">${debt.amount.toLocaleString()}</td>
                                         <td className={`p-3 font-bold ${debt.overdue > 0 ? 'text-orange-500' : 'text-gray-400'}`}>${debt.overdue.toLocaleString()}</td>
                                         <td className="p-3">
                                         {debt.overdue > 0 && (
@@ -389,6 +394,36 @@
                                     <Bar dataKey="savings" name="Savings" fill="#10B981" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                                 </ResponsiveContainer>
+                            </div>
+                        </div>
+                        
+                        {/* RESTORED PLAN DETAILS */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-6 rounded-xl">
+                                <h3 className="text-xl font-bold mb-4">🚗 Future Goal: Transport Strategy</h3>
+                                <div className="space-y-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-white/10 p-3 rounded-lg"><span className="text-xl font-bold">Phase 1</span></div>
+                                    <div><p className="font-medium text-blue-200">Stabilization (Months 1-2)</p><p className="text-sm text-gray-400">Stabilize rent and clear small debts using bridge loan and laptop sale.</p></div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-white/10 p-3 rounded-lg"><span className="text-xl font-bold text-green-400">Phase 2</span></div>
+                                    <div><p className="font-medium text-green-300">Income Jump (Month 3)</p><p className="text-sm text-gray-400">Manager promotion ($25/hr). $500/month allocated to savings.</p></div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="bg-white/10 p-3 rounded-lg"><span className="text-xl font-bold text-purple-400">Phase 3</span></div>
+                                    <div><p className="font-medium text-purple-300">Purchase (Month 5)</p><p className="text-sm text-gray-400">Target Reached: ~$1,500 Cash. Ready for Down Payment.</p></div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-white p-6 rounded-xl border border-gray-200">
+                                <h3 className="font-bold mb-4 text-slate-800">Responsible Debt Management</h3>
+                                <ol className="list-decimal pl-5 space-y-4 text-sm">
+                                <li className="text-slate-600"><strong className="text-orange-600 block mb-1">Step 1: Immediate Stabilization</strong> Utilize the $1,000 bridge loan to bring Rent, Affirm, and Possible accounts current.</li>
+                                <li className="text-slate-600"><strong className="text-blue-600 block mb-1">Step 2: Liquidation</strong> Sell the Laptop ($800) to pay back the bridge loan or eliminate smaller accounts.</li>
+                                <li className="text-slate-600"><strong className="text-blue-600 block mb-1">Step 3: High-Interest Focus</strong> Once manager pay begins, allocate 50% of the raise to the USAA balance.</li>
+                                </ol>
                             </div>
                         </div>
                     </div>
