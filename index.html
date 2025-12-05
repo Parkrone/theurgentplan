@@ -26,7 +26,6 @@
         .loading-screen { display: flex; justify-content: center; align-items: center; height: 100vh; font-size: 1.2rem; color: #64748b; }
         .markdown-body ul { list-style-type: disc; margin-left: 1.5em; }
         .markdown-body p { margin-bottom: 0.8em; }
-        /* Animation for the progress bar */
         @keyframes fillProgress { from { width: 0; } to { width: var(--progress); } }
         .progress-bar { animation: fillProgress 1.5s ease-out forwards; }
     </style>
@@ -96,12 +95,11 @@
             const [activeScript, setActiveScript] = useState(null);
 
             // --- DEBT DATA ---
-            // 'originalAmount' helps track your total progress!
             const [debts, setDebts] = useState([
                 { id: 1, name: 'Affirm (Overdue)', amount: 819, overdue: 226.46, originalAmount: 819, priority: 'High' },
                 { id: 2, name: 'Possible (Overdue)', amount: 150, overdue: 112.50, originalAmount: 150, priority: 'High' },
-                // RENT PAID OFF! Amount set to 0.
-                { id: 3, name: 'Rent Balance', amount: 0, overdue: 0, originalAmount: 449, priority: 'Paid' },
+                // UPDATED DATE BELOW
+                { id: 3, name: 'Rent Balance', amount: 0, overdue: 0, originalAmount: 449, priority: 'Paid', paidDate: 'Dec 4, 2025 • 9:38 PM' },
                 { id: 4, name: 'USAA CC', amount: 5192.15, overdue: 0, originalAmount: 5192.15, priority: 'Medium' },
                 { id: 5, name: 'Zip Financial', amount: 260.48, overdue: 0, originalAmount: 260.48, priority: 'Low' },
                 { id: 6, name: 'Klarna', amount: 95.68, overdue: 0, originalAmount: 95.68, priority: 'Low' },
@@ -137,7 +135,7 @@
             const paidDebts = debts.filter(d => d.amount === 0);
 
             const selectedCollateral = assets.filter(a => a.selected).reduce((acc, curr) => acc + curr.value, 0);
-            const immediateNeed = totalOverdue; // Rent is gone, so just active overdue bills
+            const immediateNeed = totalOverdue; 
             const coverageRatio = immediateNeed > 0 ? (selectedCollateral / immediateNeed).toFixed(1) : "Secure";
 
             const projectionData = [
@@ -149,7 +147,7 @@
             ];
 
             const COLORS = ['#FF8042', '#FFBB28', '#00C49F', '#0088FE', '#8884d8'];
-            const apiKey = ""; 
+            const apiKey = "AIzaSyDG1VmAS9f4hbdkbO5_VU5h4hvWyVtbsGs"; 
 
             // --- API & HANDLERS ---
             const callGemini = async (prompt) => {
@@ -264,6 +262,34 @@
                             </div>
                             <div className="text-right pl-6 md:border-l md:border-gray-100"><span className="block text-gray-400 text-xs uppercase tracking-wider">Total Monthly</span><span className="text-2xl font-bold text-purple-600">${totalMonthlyFixed}</span></div>
                         </div>
+
+                        {/* Main Action Alert (Restored) */}
+                        <div className="bg-white border-l-4 border-blue-500 p-6 rounded-xl shadow-sm flex flex-col md:flex-row items-center gap-8">
+                            <div className="flex-1">
+                                <h2 className="text-xl font-bold text-slate-800 mb-2">Proposal: Secured Bridge Loan</h2>
+                                <p className="text-slate-600 mb-4 leading-relaxed">
+                                Due to payroll delays, I am proposing a <strong>$1,000 family bridge loan</strong> to resolve this without incurring high-interest debt.
+                                </p>
+                                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-3">
+                                    <div className="flex items-start gap-3">
+                                        <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
+                                        <div><span className="font-bold text-slate-700">Fully Secured:</span><p className="text-sm text-slate-500">Backed by Workstation PC & RC Car (Value: $3,300). Assets exceed loan value by {coverageRatio}x.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="w-full md:w-1/3 h-64">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                    <Pie data={[{ name: 'Rent', value: 449 }, { name: 'Overdue Bills', value: 339 }, { name: 'Living Buffer', value: 212 }]} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
+                                        {projectionData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
+                                    </Pie>
+                                    <Tooltip formatter={(value) => `$${value}`} />
+                                    <Legend verticalAlign="bottom" height={36}/>
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                <p className="text-center text-xs text-gray-500 mt-2">Allocation of $1,000 Bridge Funds</p>
+                            </div>
+                        </div>
                     </div>
                     )}
 
@@ -294,7 +320,10 @@
                                     <div className="space-y-3">
                                         {paidDebts.map(debt => (
                                             <div key={debt.id} className="bg-white p-3 rounded-lg border border-yellow-100 flex justify-between items-center">
-                                                <span className="font-medium text-slate-700 line-through decoration-slate-400">{debt.name}</span>
+                                                <div>
+                                                    <span className="font-medium text-slate-700 line-through decoration-slate-400 block">{debt.name}</span>
+                                                    {debt.paidDate && <span className="text-xs text-slate-400">Cleared: {debt.paidDate}</span>}
+                                                </div>
                                                 <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
                                                     <CheckCircle className="w-3 h-3" /> PAID
                                                 </span>
