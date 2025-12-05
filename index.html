@@ -99,8 +99,8 @@
             const [debts, setDebts] = useState([
                 { id: 1, name: 'Affirm (Overdue)', amount: 819, overdue: 226.46, originalAmount: 819, priority: 'High' },
                 { id: 2, name: 'Possible (Overdue)', amount: 150, overdue: 112.50, originalAmount: 150, priority: 'High' },
-                // RENT PAID OFF!
-                { id: 3, name: 'Rent Balance', amount: 0, overdue: 0, originalAmount: 449, priority: 'Paid', paidDate: 'Dec 4, 2025 • 9:38 PM' },
+                // RENT PAID OFF! Updated originalAmount to $700 per user request
+                { id: 3, name: 'Rent Balance', amount: 0, overdue: 0, originalAmount: 700, priority: 'Paid', paidDate: 'Dec 4, 2025 • 9:38 PM' },
                 { id: 4, name: 'USAA CC', amount: 5192.15, overdue: 0, originalAmount: 5192.15, priority: 'Medium' },
                 { id: 5, name: 'Zip Financial', amount: 260.48, overdue: 0, originalAmount: 260.48, priority: 'Low' },
                 { id: 6, name: 'Klarna', amount: 95.68, overdue: 0, originalAmount: 95.68, priority: 'Low' },
@@ -327,9 +327,12 @@
                                                     <span className="font-medium text-slate-700 line-through decoration-slate-400 block">{debt.name}</span>
                                                     {debt.paidDate && <span className="text-xs text-slate-400">Cleared: {debt.paidDate}</span>}
                                                 </div>
-                                                <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
-                                                    <CheckCircle className="w-3 h-3" /> PAID
-                                                </span>
+                                                <div className="text-right">
+                                                    <span className="block font-bold text-green-700">${debt.originalAmount}</span>
+                                                    <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded inline-flex items-center gap-1 mt-1">
+                                                        <CheckCircle className="w-3 h-3" /> PAID
+                                                    </span>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -349,11 +352,19 @@
 
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm">
-                                    <thead><tr className="bg-gray-50 text-left"><th className="p-3">Creditor</th><th className="p-3">Due Now</th><th className="p-3">Action</th></tr></thead>
+                                    <thead>
+                                        <tr className="bg-gray-50 text-left">
+                                            <th className="p-3">Creditor</th>
+                                            <th className="p-3">Total Balance</th>
+                                            <th className="p-3">Due Now</th>
+                                            <th className="p-3">Action</th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         {activeDebts.sort((a,b) => b.overdue - a.overdue).map((debt) => (
                                         <tr key={debt.id} className="border-b last:border-0 hover:bg-gray-50">
                                             <td className="p-3 font-medium">{debt.name}</td>
+                                            <td className="p-3 font-semibold text-slate-700">${debt.amount.toLocaleString()}</td>
                                             <td className={`p-3 font-bold ${debt.overdue > 0 ? 'text-orange-500' : 'text-gray-400'}`}>${debt.overdue.toLocaleString()}</td>
                                             <td className="p-3">
                                             {debt.overdue > 0 && (
