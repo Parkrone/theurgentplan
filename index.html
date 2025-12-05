@@ -86,6 +86,7 @@
         const Loader2 = (props) => <IconWrapper {...props} className={`${props.className || ''} animate-spin`}><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></IconWrapper>;
         const X = (props) => <IconWrapper {...props}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></IconWrapper>;
         const Trophy = (props) => <IconWrapper {...props}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></IconWrapper>;
+        const Utensils = (props) => <IconWrapper {...props}><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /></IconWrapper>;
 
         const FinancialDashboard = () => {
             const [activeTab, setActiveTab] = useState('dashboard');
@@ -98,7 +99,7 @@
             const [debts, setDebts] = useState([
                 { id: 1, name: 'Affirm (Overdue)', amount: 819, overdue: 226.46, originalAmount: 819, priority: 'High' },
                 { id: 2, name: 'Possible (Overdue)', amount: 150, overdue: 112.50, originalAmount: 150, priority: 'High' },
-                // UPDATED DATE BELOW
+                // RENT PAID OFF!
                 { id: 3, name: 'Rent Balance', amount: 0, overdue: 0, originalAmount: 449, priority: 'Paid', paidDate: 'Dec 4, 2025 • 9:38 PM' },
                 { id: 4, name: 'USAA CC', amount: 5192.15, overdue: 0, originalAmount: 5192.15, priority: 'Medium' },
                 { id: 5, name: 'Zip Financial', amount: 260.48, overdue: 0, originalAmount: 260.48, priority: 'Low' },
@@ -122,6 +123,8 @@
                 { name: 'Rent & Utilities', amount: 700, icon: Home },
                 { name: 'Phone, Internet, TV', amount: 100, icon: Smartphone },
                 { name: 'Mohela Loan', amount: 70, icon: GraduationCap },
+                { name: 'Food & Groceries', amount: 370, icon: Utensils },
+                { name: 'Travel & Gas', amount: 250, icon: Car },
             ];
             const totalMonthlyFixed = monthlyFixed.reduce((acc, item) => acc + item.amount, 0);
 
